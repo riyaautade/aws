@@ -1,0 +1,81 @@
+sudo apt update -y
+sudo apt install mysql-server -y
+sudo systemctl start mysql
+sudo systemctl enable mysql
+sudo mysql
+
+
+MySQL code: 
+
+Create and use DB & create table:
+
+CREATE DATABASE companyDB;
+USE companyDB;
+CREATE TABLE Employees (
+    EmpID INT AUTO_INCREMENT PRIMARY KEY,
+    Name VARCHAR(50),
+    Department VARCHAR(50),
+    Salary DECIMAL(10,2)
+);
+
+
+Insert Sample data:
+
+INSERT INTO Employees (Name, Department, Salary) VALUES
+('Alice', 'HR', 50000),
+('Bob', 'IT', 60000),
+('Charlie', 'Finance', 70000);
+SELECT * FROM Employees;
+
+
+
+Create a Trigger:
+
+CREATE TABLE SalaryLog (
+    LogID INT AUTO_INCREMENT PRIMARY KEY,
+    EmpID INT,
+    OldSalary DECIMAL(10,2),
+    NewSalary DECIMAL(10,2),
+    ChangeDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+DELIMITER //
+CREATE TRIGGER before_salary_update
+BEFORE UPDATE ON Employees
+FOR EACH ROW
+BEGIN
+    IF OLD.Salary <> NEW.Salary THEN
+        INSERT INTO SalaryLog (EmpID, OldSalary, NewSalary)
+        VALUES (OLD.EmpID, OLD.Salary, NEW.Salary);
+    END IF;
+END//
+DELIMITER ;
+
+
+Test it:
+
+UPDATE Employees SET Salary = 65000 WHERE Name='Bob';
+SELECT * FROM SalaryLog;
+
+
+
+Create a Stored Procedure:
+
+DELIMITER //
+CREATE PROCEDURE IncreaseSalaryByDept(IN deptName VARCHAR(50), IN percentIncrease DECIMAL(5,2))
+BEGIN
+    UPDATE Employees
+    SET Salary = Salary + (Salary * percentIncrease / 100)
+    WHERE Department = deptName;
+END//
+DELIMITER ;
+
+
+Call the procedure:
+
+CALL IncreaseSalaryByDept('IT', 10);
+SELECT * FROM Employees;
+
+
+EXIT;
+
