@@ -60,7 +60,7 @@ Done
 _____  _____   _______  ________  ______  _________  ________  ______  __________  ______  _____  ____
 
 S3:
-when you download the 4 files-> put in a folder-> make a zip folder inside the folder
+download the 4 files: index, error, style, script
 
 S3 -> Create bucket -> name: awsweb-riya
 All default -> uncheck block -> I acknowledge-> create bucket
@@ -165,6 +165,7 @@ ________________________________________________________________________________
 
 
 3. Web Application Deployment using AWS Elastic Beanstalk
+download the files-> put in a folder-> make a zip folder inside the folder
 
 Elastic Beanstalk -> Create application/environment
 Web server environment -> name app -> name env -> Platform: Python
