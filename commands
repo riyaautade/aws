@@ -60,6 +60,7 @@ Done
 _____  _____   _______  ________  ______  _________  ________  ______  __________  ______  _____  ____
 
 S3:
+when you download the 4 files-> put in a folder-> make a zip folder inside the folder
 
 S3 -> Create bucket -> name: awsweb-riya
 All default -> uncheck block -> I acknowledge-> create bucket
