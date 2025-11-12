@@ -237,6 +237,73 @@ Next next next till Review -> create -> time
 Click URL in Domain -> Done 
 
 
+FOR STATIC PAGE
+
+1. Prerequisites
+AWS Account
+AWS CLI installed (aws configure to set up access keys)
+Elastic Beanstalk CLI installed (pip install awsebcli)
+Your project folder ready (e.g., index.html, style.css, script.js)
+
+2. Prepare Your Project
+Your folder structure should look like this:
+my-static-site/
+ ├── index.html
+ ├── style.css
+ ├── script.js
+
+Add a file named application.py (Beanstalk expects an entry point).
+But since this is a static site, we’ll use a simple trick:
+
+my-static-site/
+ ├── .ebextensions/
+ │    └── static-site.config
+ ├── index.html
+ ├── style.css
+ ├── script.js
+
+static-site.config
+
+option_settings:
+  aws:elasticbeanstalk:environment:ProxyServer: nginx
+
+This tells Beanstalk to serve static files through Nginx.
+
+3. Initialize Elastic Beanstalk
+In your terminal:
+cd my-static-site
+eb init
+
+Select your region
+Choose “Web Server Environment”
+Platform: Python or Node.js (either is fine for static hosting)
+
+Enter your app name
+
+4. Create Environment
+eb create my-static-env
+
+This will:
+Create an EC2 instance (Ubuntu-based)
+Configure load balancer and environment
+
+5. Deploy the Site
+eb deploy
+
+Wait for deployment to finish.
+
+6. Access Your Website
+After deployment:
+eb open
+
+This opens your live website URL in the browser.
+
+7. Update Later
+When you make changes:
+eb deploy
+
+You don’t need to modify any internal Beanstalk config files except adding .ebextensions/static-site.config.
+AWS Beanstalk handles instance creation, Nginx setup, and serving your static files automatically.
 ___________________________________________________________________________________________________________________________________________________
 
 
