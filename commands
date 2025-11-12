@@ -86,6 +86,68 @@ Properties-> static website hosting-> URL/ endpoint in browser
 Done
 
 
+EC2 WITH MORE FILES:
+
+1. Launch EC2 Instance
+AMI: Ubuntu Server 22.04 LTS (Free Tier eligible)
+Instance type: t2.micro
+Security Group (SG):
+Type	Port	Source
+SSH	22	Your IP
+HTTP	80	0.0.0.0/0
+Key Pair: Create or use an existing one → download .pem file
+Launch the instance and note its Public IPv4 address
+
+2. Connect to the Instance
+Use EC2 Instance Connect or SSH from terminal:
+ssh -i "my-key.pem" ubuntu@<PUBLIC_IP>
+
+3. Update and Install Apache
+sudo apt update -y
+sudo apt install apache2 -y
+sudo systemctl start apache2
+sudo systemctl enable apache2
+
+Check Apache status:
+sudo systemctl status apache2
+
+4. Upload Website Files
+From your local system, upload your HTML, CSS, and JS files:
+scp -i "my-key.pem" login.html style.css script.js ubuntu@<PUBLIC_IP>:/tmp/
+
+Then move them into Apache’s web root:
+sudo mv /tmp/*.html /var/www/html/
+sudo mv /tmp/*.css /var/www/html/
+sudo mv /tmp/*.js /var/www/html/
+sudo cp /var/www/html/login.html /var/www/html/index.html
+sudo chmod 644 /var/www/html/*
+sudo systemctl restart apache2
+
+5. Verify Access
+In your browser, open:
+http://<PUBLIC_IP>/
+You should see your login page.
+If not:
+Check Security Group → make sure HTTP (80) is allowed.
+Verify Apache is active:
+sudo systemctl status apache2
+Check logs if needed:
+sudo tail -n 20 /var/log/apache2/error.log
+
+6. (Optional) Auto-setup using User Data
+To automate Apache install and hosting on every new instance:
+Add this under Advanced details → User data during launch:
+#!/bin/bash
+apt update -y
+apt install apache2 -y
+systemctl start apache2
+systemctl enable apache2
+echo "<h1>Welcome to My Static Site</h1>" > /var/www/html/index.html
+
+7. Final Verification
+Apache status: active (running)
+curl localhost inside instance shows your page
+http://<PUBLIC_IP>/ opens your site publicly
 ___________________________________________________________________________________________________________________________________________________
 
 
